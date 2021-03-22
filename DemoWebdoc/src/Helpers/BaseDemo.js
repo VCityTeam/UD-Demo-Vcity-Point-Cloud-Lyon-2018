@@ -42,6 +42,7 @@ export class BaseDemo {
     this.layerManager;
   }
 
+
   start(path) {
     const _this = this;
     this.appendTo(document.body);
@@ -145,11 +146,36 @@ export class BaseDemo {
         ////// BillBoard
         var test = new BillBoard(this.view.scene,(0,50,0));
         var doc = test.VisualizeBillBoard();
-        console.log(doc.position);
         this.view.scene.add(doc);
-        //this.view.camera.lookAt(doc.position);
+
+        var ballMaterial = new THREE.SpriteMaterial( { map: 'assets/img/logo-liris.png'} );
+        var sprite = new THREE.Sprite( ballMaterial );
+        sprite.position.set( window.innerWidth - 50, window.innerHeight - 50, 0 );
+        sprite.scale.set( 64, 64, 1.0 ); // imageWidth, imageHeight
+        this.view.scene.add( sprite );
+
+        //var doc2 = test.VisualizeBillBoardOnSideOFScreen("assets/img/logo-liris.png");
+        //this.view.scene.add(doc2);
       }
     });
+  }
+
+  
+  CreateHUDSprite( texture ){
+    const material = new THREE.SpriteMaterial( { map: texture } );
+
+    const width = material.map.image.width;
+    const height = material.map.image.height;
+
+    let spriteTL = new THREE.Sprite( material );
+    spriteTL.center.set( 0.0, 1.0 );
+    spriteTL.scale.set( width, height, 1 );
+    view.scene.add( spriteTL );
+
+    const widthK = window.innerWidth / 2;
+    const heightK = window.innerHeight / 2;
+
+    spriteTL.position.set( - widthK, heightK, 1 ); // top left
   }
 
   /**
@@ -159,7 +185,7 @@ export class BaseDemo {
     return /*html*/ `
             <header id="${this.headerId}">
                 <div>
-                    <h1>UD-Viz &bull;</h1>
+                    <h1>Derrière les fumées</h1>
                     <div id="${this.authFrameLocationId}"></div>
                 </div>
                 <div id="_base_demo_struct_header_panel">
