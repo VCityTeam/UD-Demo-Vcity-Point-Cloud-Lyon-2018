@@ -15,6 +15,7 @@ import proj4 from 'proj4';
 const jquery = require('jquery');
 
 import './BaseDemo.css';
+import { BillBoard } from './Billboard';
 
 /**
  * Represents the base HTML content of a demo for UD-Viz and provides methods to
@@ -57,18 +58,6 @@ export class BaseDemo {
 
       ////// REQUEST SERVICE
       const requestService = new Components.RequestService();
-
-      ////// ABOUT MODULE
-      if (_this.config.widgets.aboutWindow) {
-        const about = new Widgets.AboutWindow();
-        _this.addModuleView('about', about);
-      }
-
-      ////// HELP MODULE
-      if (_this.config.widgets.helpWindow) {
-        const help = new Widgets.HelpWindow();
-        _this.addModuleView('help', help);
-      }
 
       ////// AUTHENTICATION MODULE
       if (_this.config.widgets.authenticationView) {
@@ -143,63 +132,8 @@ export class BaseDemo {
             name: 'Guided Tours',
           });
         }
-      }
 
-      ////// GEOCODING EXTENSION
-      if (_this.config.widgets.geocodingView) {
-        const geocodingService = new Widgets.Extensions.GeocodingService(
-          requestService,
-          _this.extent,
-          _this.config
-        );
-        const geocodingView = new Widgets.Extensions.GeocodingView(
-          geocodingService,
-          _this.controls,
-          _this.view
-        );
-        _this.addModuleView('geocoding', geocodingView, {
-          binding: 's',
-          name: 'Address Search',
-        });
-      }
-
-      ////// CITY OBJECTS MODULE
-      let cityObjectModule = null;
-      if (_this.config.widgets.cityObjectModule) {
-        cityObjectModule = new Widgets.CityObjectModule(
-          _this.layerManager,
-          _this.config
-        );
-        _this.addModuleView('cityObjects', cityObjectModule.view);
-      }
-
-      ////// LINKS MODULES
-      if (
-        documentModule &&
-        cityObjectModule &&
-        _this.config.widgets.linkModule
-      ) {
-        const linkModule = new Widgets.LinkModule(
-          documentModule,
-          cityObjectModule,
-          requestService,
-          _this.view,
-          _this.controls,
-          _this.config
-        );
-      }
-
-      ////// 3DTILES DEBUG
-      if (_this.config.widgets.debug3DTilesWindow) {
-        const debug3dTilesWindow = new Widgets.Extensions.Debug3DTilesWindow(
-          _this.layerManager
-        );
-        _this.addModuleView('3dtilesDebug', debug3dTilesWindow, {
-          name: '3DTiles Debug',
-        });
-      }
-
-      ////// CAMERA POSITIONER
+         ////// CAMERA POSITIONER
       if (_this.config.widgets.cameraPositionerView) {
         const cameraPosition = new Widgets.CameraPositionerView(
           _this.view,
@@ -208,12 +142,12 @@ export class BaseDemo {
         _this.addModuleView('cameraPositioner', cameraPosition);
       }
 
-      ////// LAYER CHOICE
-      if (_this.config.widgets.layerChoice) {
-        const layerChoice = new Widgets.LayerChoice(baseDemo.layerManager);
-        baseDemo.addModuleView('layerChoice', layerChoice, {
-          name: 'layerChoice',
-        });
+        ////// BillBoard
+        var test = new BillBoard(this.view.scene,(0,50,0));
+        var doc = test.VisualizeBillBoard();
+        console.log(doc.position);
+        this.view.scene.add(doc);
+        //this.view.camera.lookAt(doc.position);
       }
     });
   }
@@ -762,6 +696,8 @@ export class BaseDemo {
         tilt: tilt,
       },
     });
+
+
     this.layerManager = new LayerManager(this.view);
     // ********* 3D Elements
     // Lights
