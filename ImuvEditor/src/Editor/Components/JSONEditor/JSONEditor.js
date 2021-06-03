@@ -159,6 +159,19 @@ export class JSONEditorView {
       copyButton.innerHTML = 'Copy';
       ui.appendChild(copyButton);
 
+      //select
+      const labelSelectCheckBox = document.createElement('label');
+      labelSelectCheckBox.classList.add('button_Editor');
+      labelSelectCheckBox.innerHTML = "Select";
+      labelSelectCheckBox.htmlFor = "select";
+
+      const selectCheckBox = document.createElement('input');
+      selectCheckBox.id  = 'select';
+      selectCheckBox.type = "checkbox";
+      labelSelectCheckBox.appendChild(selectCheckBox);
+
+      ui.appendChild(labelSelectCheckBox);
+
       const valuesParent = document.createElement('div');
       valuesParent.classList.add('hidden');
       valuesParent.style.marginLeft = OFFSET_LEFT + 'px';
