@@ -88,6 +88,7 @@ export class GOEditorView {
     this.checkboxGizmo = null; //display or not gizmo
     this.switchControls = null; //switch controls
     this.inputTag = null; //trigger name of meshes
+    this.checkboxVisibility = null;
     this.saveGOButton = null; //save the current go as json
     this.focusGOButton = null; //camera focus current go if render comp
     this.focusTopGOButton = null; //camera focus current go if render comp
@@ -119,6 +120,10 @@ export class GOEditorView {
 
   getRenderer() {
     return this.renderer;
+  }
+
+  getCheckboxVisibilityChecked() {
+    return this.checkboxVisibility.checked;
   }
 
   html() {
@@ -237,7 +242,8 @@ export class GOEditorView {
       });
     };
 
-    const applyVisibility = function (visible) {
+    const applyVisibility = function () {
+      const visible = this.getCheckboxVisibilityChecked();
       const text = _this.inputTag.value;
       if (_this.model && _this.model.getGameObject()) {
         const object3D = _this.model.getGameObject().fetchObject3D();
@@ -246,24 +252,31 @@ export class GOEditorView {
         object3D.traverse(function (child) {
           const name = child.name.toLowerCase();
           const tag = text.toLowerCase();
-
           child.visible = !visible;
-          if (name.includes(tag)) {
-            child.visible = visible;
-            while (child.parent) {
-              child.parent.visible = visible;
-              child = child.parent;
+          if (visible) {
+            if (name.includes(tag)) {
+              child.visible = visible;
+              while (child.parent) {
+                child.parent.visible = visible;
+                child = child.parent;
+              }
+              while (child.child) {
+                child.child.visible = visible;
+                child = child.child;
+              }
             }
-            while (child.child) {
-              child.child.visible = visible;
-              child = child.child;
+          } else {
+            if (tag != "" && name.includes(tag)) {
+              child.visible = visible;
             }
           }
         });
       }
     };
 
-    this.inputTag.onchange = applyVisibility.bind(this, true);
+    this.inputTag.onchange = applyVisibility.bind(this);
+
+    this.checkboxVisibility.onchange = applyVisibility.bind(this);
 
     this.saveGOButton.onclick = function () {
       if (_this.model && _this.model.getGameObject()) {
@@ -573,15 +586,29 @@ export class GOEditorView {
     this.ui.appendChild(switchControls);
     this.switchControls = switchControls;
 
-    //label checkbox
+    //label input visibility
     const objectVisibilityLabel = document.createElement("div");
     objectVisibilityLabel.innerHTML = "Object Tag Visibility";
     this.ui.appendChild(objectVisibilityLabel);
 
+    const wrapperInputsVisibility = document.createElement("div");
+    wrapperInputsVisibility.style.display = "flex";
+    this.ui.appendChild(wrapperInputsVisibility);
+
     const inputTag = document.createElement("input");
     inputTag.type = "text";
-    this.ui.appendChild(inputTag);
+    wrapperInputsVisibility.appendChild(inputTag);
     this.inputTag = inputTag;
+
+    //label checkbox visibility
+    const checkboxVisibilityLabel = document.createElement("div");
+    checkboxVisibilityLabel.innerHTML = "Inverse";
+    wrapperInputsVisibility.appendChild(checkboxVisibilityLabel);
+
+    const checkboxVisibility = document.createElement("input");
+    checkboxVisibility.type = "checkbox";
+    wrapperInputsVisibility.appendChild(checkboxVisibility);
+    this.checkboxVisibility = checkboxVisibility;
 
     //new go
     const newGOButton = document.createElement("div");
