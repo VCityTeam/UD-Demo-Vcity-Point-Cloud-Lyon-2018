@@ -481,6 +481,7 @@ export class GOEditorView {
     };
 
     this.jsonEditorView.onChange(this.jsonOnChange.bind(this));
+    this.jsonEditorView.onSelect(this.selectGameObject.bind(this));
   }
 
   jsonOnChange() {
@@ -496,6 +497,11 @@ export class GOEditorView {
       localStorage.setItem(LOCAL_STORAGE_FLAG_JSON, old);
       if (buffer) this.onGameObjectJSON(buffer.toJSON(true));
     }
+  }
+
+  selectGameObject()
+  {
+    console.log(this.jsonEditorView.currentJSON);
   }
 
   initUI() {

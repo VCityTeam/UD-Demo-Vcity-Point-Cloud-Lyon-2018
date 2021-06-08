@@ -32,6 +32,10 @@ export class JSONEditorView {
     this.onchange = cb;
   }
 
+  onSelect(cb) {
+    this.onselect = cb;
+  }
+
   addListener(el, key) {
     const _this = this;
     const old = el[key];
@@ -270,6 +274,13 @@ export class JSONEditorView {
         valuesParent.classList.remove('hidden');
         _this.onchange();
       };
+
+      if (selectCheckBox)
+        selectCheckBox.onchange = function () {
+          if (selectCheckBox.checked) {
+            _this.onselect();
+          }
+        };
 
       return result;
     };
