@@ -92,7 +92,7 @@ export class GameApp {
         _this.config['elevation_layer']['layer_name'],
         {
           useColorTextureElevation: true,
-          colorTextureElevationMinZ: 144,
+          colorTextureElevationMinZ: 149,
           colorTextureElevationMaxZ: 622,
           source: wmsElevationSource,
         }
