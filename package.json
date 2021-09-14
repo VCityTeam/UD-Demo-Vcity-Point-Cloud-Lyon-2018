@@ -14,14 +14,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@deck.gl/core": "^8.5.0",
+    "@deck.gl/layers": "^8.5.0",
     "@egjs/hammerjs": "^2.0.17",
+    "deck.gl": "^8.5.8",
     "keycharm": "^0.4.0",
     "timsort": "^0.3.0",
     "ud-viz": "^2.32.4",
     "uuid": "^8.3.2",
-    "vis-util": "^5.0.2",
-    "@deck.gl/core": "^8.5.0",
-    "@deck.gl/layers": "^8.5.0"
+    "vis-util": "^5.0.2"
   },
   "devDependencies": {
     "child-process-promise": "^2.2.1",
