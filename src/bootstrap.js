@@ -1,56 +1,54 @@
 /** @format */
-console.log('Code boot here');
 
-import { Templates } from 'ud-viz';
 
-let app = new Templates.AllWidget();
-app.start('../assets/config/config.json').then(() =>{
+import * as udviz from 'ud-viz';
+
+const app = new udviz.Templates.AllWidget();
+app.start('../assets/config/config.json').then((config) =>{
     app.addBaseMapLayer();
 
     app.addElevationLayer();
 
-    app.setupAndAdd3DTilesLayers();
-
-    ////// REQUEST SERVICE
-    const requestService = new udv.Components.RequestService();
+    app.setupAndAdd3DTilesLayer();
 
     ////// ABOUT MODULE
-    const about = new udv.Widgets.AboutWindow();
-    app.addModuleView("about", about);
+    const about = new udviz.Widgets.AboutWindow();
+    app.addModuleView('about', about);
 
     ////// HELP MODULE
-    const help = new udv.Widgets.HelpWindow();
-    app.addModuleView("help", help);
+    const help = new udviz.Widgets.HelpWindow(config.helpWindow);
+    app.addModuleView('help', help);
 
     ////// AUTHENTICATION MODULE
     const authenticationService =
-        new udv.Widgets.Extensions.AuthenticationService(
+        new udviz.Widgets.Extensions.AuthenticationService(
         requestService,
         app.config
         );
 
-    const authenticationView =
-        new udv.Widgets.Extensions.AuthenticationView(authenticationService);
-    app.addModuleView("authentication", authenticationView, {
-        type: udv.Templates.AllWidget.AUTHENTICATION_MODULE,
+    const authenticationView = new udviz.Widgets.Extensions.AuthenticationView(
+        authenticationService
+    );
+    app.addModuleView('authentication', authenticationView, {
+        type: udviz.Templates.AllWidget.AUTHENTICATION_MODULE,
     });
 
     ////// DOCUMENTS MODULE
-    let documentModule = new udv.Widgets.DocumentModule(
+    let documentModule = new udviz.Widgets.DocumentModule(
         requestService,
         app.config
     );
-    app.addModuleView("documents", documentModule.view);
+    app.addModuleView('documents', documentModule.view);
 
     ////// DOCUMENTS VISUALIZER EXTENSION (to orient the document)
-    const imageOrienter = new udv.Widgets.DocumentVisualizerWindow(
+    const imageOrienter = new udviz.Widgets.DocumentVisualizerWindow(
         documentModule,
         app.view,
         app.controls
     );
 
     ////// CONTRIBUTE EXTENSION
-    new udv.Widgets.Extensions.ContributeModule(
+    new udviz.Widgets.Extensions.ContributeModule(
         documentModule,
         imageOrienter,
         requestService,
@@ -60,54 +58,54 @@ app.start('../assets/config/config.json').then(() =>{
     );
 
     ////// VALIDATION EXTENSION
-    new udv.Widgets.Extensions.DocumentValidationModule(
+    new udviz.Widgets.Extensions.DocumentValidationModule(
         documentModule,
         requestService,
         app.config
     );
 
     ////// DOCUMENT COMMENTS
-    new udv.Widgets.Extensions.DocumentCommentsModule(
+    new udviz.Widgets.Extensions.DocumentCommentsModule(
         documentModule,
         requestService,
         app.config
     );
 
     ////// GUIDED TOURS MODULE
-    const guidedtour = new udv.Widgets.GuidedTourController(
+    const guidedtour = new udviz.Widgets.GuidedTourController(
         documentModule,
         requestService,
         app.config
     );
-    app.addModuleView("guidedTour", guidedtour, {
-        name: "Guided Tours",
+    app.addModuleView('guidedTour', guidedtour, {
+        name: 'Guided Tours',
     });
 
     ////// GEOCODING EXTENSION
-    const geocodingService = new udv.Widgets.Extensions.GeocodingService(
+    const geocodingService = new udviz.Widgets.Extensions.GeocodingService(
         requestService,
         app.extent,
         app.config
     );
-    const geocodingView = new udv.Widgets.Extensions.GeocodingView(
+    const geocodingView = new udviz.Widgets.Extensions.GeocodingView(
         geocodingService,
         app.controls,
         app.view
     );
-    app.addModuleView("geocoding", geocodingView, {
-        binding: "s",
-        name: "Address Search",
+    app.addModuleView('geocoding', geocodingView, {
+        binding: 's',
+        name: 'Address Search',
     });
 
     ////// CITY OBJECTS MODULE
-    let cityObjectModule = new udv.Widgets.CityObjectModule(
+    let cityObjectModule = new udviz.Widgets.CityObjectModule(
         app.layerManager,
         app.config
     );
-    app.addModuleView("cityObjects", cityObjectModule.view);
+    app.addModuleView('cityObjects', cityObjectModule.view);
 
     ////// LINKS MODULE
-    new udv.Widgets.LinkModule(
+    new udviz.Widgets.LinkModule(
         documentModule,
         cityObjectModule,
         requestService,
@@ -117,28 +115,21 @@ app.start('../assets/config/config.json').then(() =>{
     );
 
     ////// 3DTILES DEBUG
-    const debug3dTilesWindow =
-        new udv.Widgets.Extensions.Debug3DTilesWindow(app.layerManager);
-    app.addModuleView("3dtilesDebug", debug3dTilesWindow, {
-        name: "3DTiles Debug",
+    const debug3dTilesWindow = new udviz.Widgets.Extensions.Debug3DTilesWindow(
+        app.layerManager
+    );
+    app.addModuleView('3dtilesDebug', debug3dTilesWindow, {
+        name: '3DTiles Debug',
     });
 
     ////// CAMERA POSITIONER
-    const cameraPosition = new udv.Widgets.CameraPositionerView(
+    const cameraPosition = new udviz.Widgets.CameraPositionerView(
         app.view,
         app.controls
     );
-    app.addModuleView("cameraPositioner", cameraPosition);
-
-    // ////// TEMPORAL MODULE
-    // const temporalModule = new udv.Widgets.TemporalModule(
-    //   app.layerManager.tilesManagers[0],
-    //   app.config.temporalModule
-    // );
-    // app.addModuleView("temporal", temporalModule.view);
+    app.addModuleView('cameraPositioner', cameraPosition);
 
     ////// LAYER CHOICE MODULE
-    const layerChoice = new udv.Widgets.LayerChoice(app.layerManager);
-    app.addModuleView("layerChoice", layerChoice);
-
+    const layerChoice = new udviz.Widgets.LayerChoice(app.layerManager);
+    app.addModuleView('layerChoice', layerChoice);
 });

@@ -49,183 +49,21 @@ export class AllWidget {
   }
 
   start(path) {
-    const _this = this;
-    this.appendTo(document.body);
-    this.loadConfigFile(path).then(() => {
+    return new Promise( resolve => {
+      const _this = this;
+      this.appendTo(document.body);
+      this.loadConfigFile(path).then(() => {
       // Use the stable server
-      _this.addLogos();
+        _this.addLogos();
 
-      // Initialize iTowns 3D view
-      //_this.init3DView();
-      _this.initDeckgl();
-      //_this.addBaseMapLayer();
-      //_this.addElevationLayer();
-      //_this.setupAndAdd3DTilesLayer();
-      //_this.update3DView();
+        // Initialize iTowns 3D view
+        _this.init3DView();
 
-      ////// REQUEST SERVICE
-      const requestService = new Components.RequestService();
-
-      ////// ABOUT MODULE
-      if (_this.config.widgets.aboutWindow) {
-        const about = new Widgets.AboutWindow();
-        _this.addModuleView('about', about);
-      }
-
-      ////// HELP MODULE
-      if (_this.config.widgets.helpWindow) {
-        const help = new Widgets.HelpWindow();
-        _this.addModuleView('help', help);
-      }
-
-      ////// AUTHENTICATION MODULE
-      if (_this.config.widgets.authenticationView) {
-        const authenticationService =
-          new Widgets.Extensions.AuthenticationService(
-            requestService,
-            _this.config
-          );
-        const authenticationView = new Widgets.Extensions.AuthenticationView(
-          authenticationService
-        );
-        _this.addModuleView('authentication', authenticationView, {
-          type: AllWidget.AUTHENTICATION_MODULE,
-        });
-      }
-
-      ////// DOCUMENTS MODULE
-      let documentModule = null;
-      if (_this.config.widgets.documentModule) {
-        documentModule = new Widgets.DocumentModule(
-          requestService,
-          _this.config
-        );
-        _this.addModuleView('documents', documentModule.view);
-
-        ////// DOCUMENTS VISUALIZER (to orient the document)
-        if (_this.config.widgets.documentVisualizerWindow) {
-          const imageOrienter = new Widgets.DocumentVisualizerWindow(
-            documentModule,
-            _this.view,
-            _this.controls
-          );
-
-          ////// CONTRIBUTE EXTENSION
-          if (_this.config.widgets.contributeModule) {
-            new Widgets.Extensions.ContributeModule(
-              documentModule,
-              imageOrienter,
-              requestService,
-              _this.view,
-              _this.controls,
-              _this.config
-            );
-          }
-        }
-
-        ////// VALIDATION EXTENSION
-        if (_this.config.widgets.documentValidationModule) {
-          new Widgets.Extensions.DocumentValidationModule(
-            documentModule,
-            requestService,
-            _this.config
-          );
-        }
-
-        ////// DOCUMENT COMMENTS
-        if (_this.config.widgets.documentCommentsModule) {
-          new Widgets.Extensions.DocumentCommentsModule(
-            documentModule,
-            requestService,
-            _this.config
-          );
-        }
-
-        ////// GUIDED TOURS MODULE
-        if (_this.config.widgets.guidedTourController) {
-          const guidedtour = new Widgets.GuidedTourController(
-            documentModule,
-            requestService,
-            _this.config
-          );
-          _this.addModuleView('guidedTour', guidedtour, {
-            name: 'Guided Tours',
-          });
-        }
-      }
-
-      ////// GEOCODING EXTENSION
-      if (_this.config.widgets.geocodingView) {
-        const geocodingService = new Widgets.Extensions.GeocodingService(
-          requestService,
-          _this.extent,
-          _this.config
-        );
-        const geocodingView = new Widgets.Extensions.GeocodingView(
-          geocodingService,
-          _this.controls,
-          _this.view
-        );
-        _this.addModuleView('geocoding', geocodingView, {
-          binding: 's',
-          name: 'Address Search',
-        });
-      }
-
-      ////// CITY OBJECTS MODULE
-      let cityObjectModule = null;
-      if (_this.config.widgets.cityObjectModule) {
-        cityObjectModule = new Widgets.CityObjectModule(
-          _this.layerManager,
-          _this.config
-        );
-        _this.addModuleView('cityObjects', cityObjectModule.view);
-      }
-
-      ////// LINKS MODULES
-      if (
-        documentModule &&
-        cityObjectModule &&
-        _this.config.widgets.linkModule
-      ) {
-        new Widgets.LinkModule(
-          documentModule,
-          cityObjectModule,
-          requestService,
-          _this.view,
-          _this.controls,
-          _this.config
-        );
-      }
-
-      ////// 3DTILES DEBUG
-      if (_this.config.widgets.debug3DTilesWindow) {
-        const debug3dTilesWindow = new Widgets.Extensions.Debug3DTilesWindow(
-          _this.layerManager
-        );
-        _this.addModuleView('3dtilesDebug', debug3dTilesWindow, {
-          name: '3DTiles Debug',
-        });
-      }
-
-      ////// CAMERA POSITIONER
-      if (_this.config.widgets.cameraPositionerView) {
-        const cameraPosition = new Widgets.CameraPositionerView(
-          _this.view,
-          _this.controls
-        );
-        _this.addModuleView('cameraPositioner', cameraPosition);
-      }
-
-      ////// LAYER CHOICE
-      if (_this.config.widgets.layerChoice) {
-        const layerChoice = new Widgets.LayerChoice(_this.layerManager);
-        _this.addModuleView('layerChoice', layerChoice, {
-          name: 'layerChoice',
-        });
-      }
+        resolve('resolved');
+      });
     });
   }
+
 
   /**
    * Returns the basic html content of the demo
@@ -255,7 +93,9 @@ export class AllWidget {
                     </ul>
                 </nav>
                 <section id="${this.contentSectionId}">
-                    <div id="${this.viewerDivId}"><canvas id="deck-canvas" style="z-index: 2;"></canvas></div>
+                    <div id="${this.viewerDivId}">
+                    </div>
+                    <canvas id="deck-canvas" style="z-index: 2;"></canvas>
                 </section>
             </div>
         `;
@@ -716,9 +556,6 @@ export class AllWidget {
    * Initializes the iTowns 3D view according the config.
    */
   init3DView() {
-    // ********* INIT ITOWNS VIEW
-    // Define projection used in iTowns viewer (taken from
-    // https://epsg.io/3946, Proj4js section)
     proj4.default.defs(
       'EPSG:3946',
       '+proj=lcc +lat_1=45.25 +lat_2=46.75' +
@@ -775,6 +612,7 @@ export class AllWidget {
       },
     });
     this.layerManager = new Widgets.Components.LayerManager(this.view);
+
     // ********* 3D Elements
     // Lights
     let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -821,9 +659,11 @@ export class AllWidget {
       },
     });
   }
-
+  /**
+   * Deckgl view
+   */
   initDeckgl(){
-    var extent = new itowns.Extent(
+    /*var extent = new itowns.Extent(
       'EPSG:3857',
       -20026376.39, 20026376.39,
       -20048966.10, 20048966.10);
@@ -836,8 +676,8 @@ export class AllWidget {
     // but in case of orthographic we don't need this feature, so disable it
     var view = new itowns.PlanarView(viewerDiv, extent, { disableSkirt: false, maxSubdivisionLevel: 10,
         placement: new itowns.Extent('EPSG:3857', -20000000, 20000000, -8000000, 20000000),
-    });
-    
+    });*/
+    var viewD;
 
     const deck = new Deck({
       canvas: 'deck-canvas',
@@ -848,7 +688,7 @@ export class AllWidget {
       controller: true,
       onViewStateChange: ({viewState}) => {
 
-        /*proj4.default.defs(
+        proj4.default.defs(
           'EPSG:3946',
           '+proj=lcc +lat_1=45.25 +lat_2=46.75' +
             ' +lat_0=46 +lon_0=3 +x_0=1700000 +y_0=5200000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
@@ -889,7 +729,15 @@ export class AllWidget {
         // Instantiate PlanarView (iTowns' view that will hold the layers)
         // The skirt allows to remove the cracks between the terrain tiles
         // Instantiate controls within PlanarView
-        this.view = new itowns.PlanarView(viewerDiv, this.extent, {
+
+        viewD = new itowns.PlanarView(viewerDiv, this.extent, { disableSkirt: false, maxSubdivisionLevel: 10,
+          placement: new itowns.Extent('EPSG:3857', -20000000, 20000000, -8000000, 20000000),
+        });
+
+        console.log(this.extent);
+        
+
+        /*var viewD = new itowns.PlanarView(viewerDiv, this.extent, {
           disableSkirt: false,
           controls: {
             maxZenithAngle: 180,
@@ -903,13 +751,29 @@ export class AllWidget {
             tilt: tilt,
           },
         });
-        this.layerManager = new Widgets.Components.LayerManager(this.view);*/
+        this.layerManager = new Widgets.Components.LayerManager(viewD);*/
+
+        // ********* 3D Elements
+        // Lights
+        /*let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(0, 0, 20000);
+        directionalLight.updateMatrixWorld();
+        this.view.scene.add(directionalLight);
+
+        let ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        ambientLight.position.set(0, 0, 3000);
+        directionalLight.updateMatrixWorld();
+        this.view.scene.add(ambientLight);*/
+
+        // Controls
+        this.controls = viewD.controls;
+
+        // Set sky color to blue
+        viewD.mainLoop.gfxEngine.renderer.setClearColor(0x6699cc, 1);
 
 
-
-
-        const cam3D = view.camera.camera3D;
-        const prev = itowns.CameraUtils.getTransformCameraLookingAtTarget(view, cam3D);
+        const cam3D = viewD.camera.camera3D;
+        const prev = itowns.CameraUtils.getTransformCameraLookingAtTarget(viewD, cam3D);
         const newPos = prev;
         newPos.coord = new itowns.Coordinates('EPSG:4326', viewState.longitude, viewState.latitude, 0);
     
@@ -919,15 +783,15 @@ export class AllWidget {
         // for some reason I cant access Math.clamp
         //newPos.tilt = math.clamp((90 - viewState.pitch), 0, 90); 
     
-        itowns.CameraUtils.transformCameraToLookAtTarget(view, cam3D, newPos);
-        view.notifyChange();
+        itowns.CameraUtils.transformCameraToLookAtTarget(viewD, cam3D, newPos);
+        viewD.notifyChange();
         cam3D.updateMatrixWorld();
         // We can set pitch and bearing to 0 to disable tilting and turning 
         // viewState.pitch = 0;
         // viewState.bearing = 0;
-    
+        viewD.notifyChange();
         return viewState;
-      },
+      }/*,
       layers: [
         new GeoJsonLayer({
           id: 'airports',
@@ -956,10 +820,10 @@ export class AllWidget {
           getTargetColor: [200, 0, 80],
           getWidth: 1
         })
-      ]
+      ]*/
     });
 
-    view.notifyChange();
+    viewD.notifyChange();
   }
 
   ////////////////////////////////////////////////////////

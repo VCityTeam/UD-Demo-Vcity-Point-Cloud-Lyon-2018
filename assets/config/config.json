@@ -198,51 +198,6 @@
         "type": "double",
         "optional": "false",
         "displayable": "false"
-      },
-      "positionY": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
-      },
-      "positionZ": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
-      },
-      "quaternionX": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
-      },
-      "quaternionY": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
-      },
-      "quaternionZ": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
-      },
-      "quaternionW": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
-      },
-      "billboardX": {
-        "type": "double",
-        "optional": "true",
-        "displayable": "false"
-      },
-      "billboardY": {
-        "type": "double",
-        "optional": "true",
-        "displayable": "false"
-      },
-      "billboardZ": {
-        "type": "double",
-        "optional": "true",
-        "displayable": "false"
       }
     }
   }
