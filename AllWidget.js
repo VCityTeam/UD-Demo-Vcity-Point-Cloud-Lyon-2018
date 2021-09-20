@@ -49,21 +49,21 @@ export class AllWidget {
   }
 
   start(path) {
-    return new Promise( resolve => {
-      const _this = this;
-      this.appendTo(document.body);
-      this.loadConfigFile(path).then(() => {
+    const _this = this;
+    this.appendTo(document.body);
+    this.loadConfigFile(path).then(() => {
       // Use the stable server
-        _this.addLogos();
+      _this.addLogos();
 
-        // Initialize iTowns 3D view
-        _this.init3DView();
-
-        resolve('resolved');
-      });
+      // Initialize iTowns 3D view
+      //_this.init3DView();
+      _this.initDeckgl();
+      _this.addBaseMapLayer();
+      _this.addElevationLayer();
+      _this.setupAndAdd3DTilesLayer();
+      _this.update3DView();
     });
   }
-
 
   /**
    * Returns the basic html content of the demo
@@ -93,9 +93,7 @@ export class AllWidget {
                     </ul>
                 </nav>
                 <section id="${this.contentSectionId}">
-                    <div id="${this.viewerDivId}">
-                    </div>
-                    <canvas id="deck-canvas" style="z-index: 2;"></canvas>
+                    <div id="${this.viewerDivId}"><canvas id="deck-canvas" style="z-index: 2;"></canvas></div>
                 </section>
             </div>
         `;
@@ -556,6 +554,9 @@ export class AllWidget {
    * Initializes the iTowns 3D view according the config.
    */
   init3DView() {
+    // ********* INIT ITOWNS VIEW
+    // Define projection used in iTowns viewer (taken from
+    // https://epsg.io/3946, Proj4js section)
     proj4.default.defs(
       'EPSG:3946',
       '+proj=lcc +lat_1=45.25 +lat_2=46.75' +
@@ -611,8 +612,8 @@ export class AllWidget {
         tilt: tilt,
       },
     });
+    //console.log(this.view)
     this.layerManager = new Widgets.Components.LayerManager(this.view);
-
     // ********* 3D Elements
     // Lights
     let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
@@ -631,13 +632,7 @@ export class AllWidget {
     // Set sky color to blue
     this.view.mainLoop.gfxEngine.renderer.setClearColor(0x6699cc, 1);
   }
-  /*
-   * Updates the 3D view by notifying iTowns that it changed (e.g. because a layer has been added).
-   */
-  update3DView() {
-    // Request itowns view redraw
-    this.view.notifyChange();
-  }
+
 
   /**
    * Loads a config file. Module views should only be added after calling
@@ -659,25 +654,16 @@ export class AllWidget {
       },
     });
   }
-  /**
-   * Deckgl view
-   */
+
+  clamp(val, min, max){
+    if( val >= max ) val = max;
+    else if(val <= min) val = min;
+    return val; 
+  }
+
   initDeckgl(){
-    /*var extent = new itowns.Extent(
-      'EPSG:3857',
-      -20026376.39, 20026376.39,
-      -20048966.10, 20048966.10);
-  
-    // `viewerDiv` will contain iTowns' rendering area (`<canvas>`)
-    var viewerDiv = document.getElementById('viewerDiv');
-  
-    // Instanciate PlanarView
-    // By default itowns' tiles geometry have a "skirt" (ie they have a height),
-    // but in case of orthographic we don't need this feature, so disable it
-    var view = new itowns.PlanarView(viewerDiv, extent, { disableSkirt: false, maxSubdivisionLevel: 10,
-        placement: new itowns.Extent('EPSG:3857', -20000000, 20000000, -8000000, 20000000),
-    });*/
-    var viewD;
+
+    this.init3DView()
 
     const deck = new Deck({
       canvas: 'deck-canvas',
@@ -685,113 +671,28 @@ export class AllWidget {
       height: '100%',
       initialViewState: INITIAL_VIEW_STATE,
       map: false,
-      controller: true,
-      onViewStateChange: ({viewState}) => {
-
-        proj4.default.defs(
-          'EPSG:3946',
-          '+proj=lcc +lat_1=45.25 +lat_2=46.75' +
-            ' +lat_0=46 +lon_0=3 +x_0=1700000 +y_0=5200000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
-        );
-    
-        // Define geographic extent: CRS, min/max X, min/max Y
-        // area should be one of the properties of the object extents in config file
-        let min_x = parseInt(this.config['extents']['min_x']);
-        let max_x = parseInt(this.config['extents']['max_x']);
-        let min_y = parseInt(this.config['extents']['min_y']);
-        let max_y = parseInt(this.config['extents']['max_y']);
-        this.extent = new itowns.Extent(
-          this.config['projection'],
-          min_x,
-          max_x,
-          min_y,
-          max_y
-        );
-    
-        // Get camera placement parameters from config
-        let coordinates = this.extent.center();
-        if (
-          this.config['camera']['position']['x'] &&
-          this.config['camera']['position']['y']
-        ) {
-          coordinates = new itowns.Coordinates(
-            'EPSG:3946',
-            parseInt(this.config['camera']['position']['x']),
-            parseInt(this.config['camera']['position']['y'])
-          );
-        }
-        let heading = parseFloat(this.config['camera']['position']['heading']);
-        let range = parseFloat(this.config['camera']['position']['range']);
-        let tilt = parseFloat(this.config['camera']['position']['tilt']);
-    
-        // `viewerDiv` will contain iTowns' rendering area (`<canvas>`)
-        let viewerDiv = document.getElementById('viewerDiv');
-        // Instantiate PlanarView (iTowns' view that will hold the layers)
-        // The skirt allows to remove the cracks between the terrain tiles
-        // Instantiate controls within PlanarView
-
-        viewD = new itowns.PlanarView(viewerDiv, this.extent, { disableSkirt: false, maxSubdivisionLevel: 10,
-          placement: new itowns.Extent('EPSG:3857', -20000000, 20000000, -8000000, 20000000),
-        });
-
-        console.log(this.extent);
-        
-
-        /*var viewD = new itowns.PlanarView(viewerDiv, this.extent, {
-          disableSkirt: false,
-          controls: {
-            maxZenithAngle: 180,
-            groundLevel: -100,
-            handleCollision: false,
-          },
-          placement: {
-            coord: coordinates,
-            heading: heading,
-            range: range,
-            tilt: tilt,
-          },
-        });
-        this.layerManager = new Widgets.Components.LayerManager(viewD);*/
-
-        // ********* 3D Elements
-        // Lights
-        /*let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(0, 0, 20000);
-        directionalLight.updateMatrixWorld();
-        this.view.scene.add(directionalLight);
-
-        let ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        ambientLight.position.set(0, 0, 3000);
-        directionalLight.updateMatrixWorld();
-        this.view.scene.add(ambientLight);*/
-
-        // Controls
-        this.controls = viewD.controls;
-
-        // Set sky color to blue
-        viewD.mainLoop.gfxEngine.renderer.setClearColor(0x6699cc, 1);
-
-
-        const cam3D = viewD.camera.camera3D;
-        const prev = itowns.CameraUtils.getTransformCameraLookingAtTarget(viewD, cam3D);
+      controller: false,
+      onViewStateChange: ({viewState}) => { 
+        const cam3D = this.view.camera.camera3D;
+        const prev = itowns.CameraUtils.getTransformCameraLookingAtTarget(this.view, cam3D);
         const newPos = prev;
-        newPos.coord = new itowns.Coordinates('EPSG:4326', viewState.longitude, viewState.latitude, 0);
-    
+        newPos.coord = new itowns.Coordinates('EPSG:3946', 1845895.6042754622, 5173715.855424282, 5173715.855424282);
+
         // newPos.range = 64118883.098724395 / (2**(viewState.zoom-1));
         newPos.range = 64118883 / (2**(viewState.zoom-1)); // 64118883 is Range at Z=1 
         newPos.heading = viewState.bearing;
         // for some reason I cant access Math.clamp
-        //newPos.tilt = math.clamp((90 - viewState.pitch), 0, 90); 
-    
-        itowns.CameraUtils.transformCameraToLookAtTarget(viewD, cam3D, newPos);
-        viewD.notifyChange();
+        //newPos.tilt = clamp((90 - viewState.pitch), 0, 90); 
+
+        itowns.CameraUtils.transformCameraToLookAtTarget(this.view, cam3D, newPos);
+        this.view.notifyChange();
         cam3D.updateMatrixWorld();
         // We can set pitch and bearing to 0 to disable tilting and turning 
         // viewState.pitch = 0;
         // viewState.bearing = 0;
-        viewD.notifyChange();
+
         return viewState;
-      }/*,
+      },
       layers: [
         new GeoJsonLayer({
           id: 'airports',
@@ -814,17 +715,25 @@ export class AllWidget {
           data: AIR_PORTS,
           dataTransform: d => d.features.filter(f => f.properties.scalerank < 4),
           // Styles
-          getSourcePosition: f => [-0.4531566, 51.4709959], // London
-          getTargetPosition: f => f.geometry.coordinates,
+          getSourcePosition: f => [1843760.104658541, 5175221.593610051], // London
+          getTargetPosition: f => /*f.geometry.coordinates*/[1843592.5110736154, 5176373.4759538695],
           getSourceColor: [0, 128, 200],
           getTargetColor: [200, 0, 80],
-          getWidth: 1
+          getWidth: 1200
         })
-      ]*/
+      ]
     });
 
-    viewD.notifyChange();
+    this.view.notifyChange();
   }
+
+    /*
+   * Updates the 3D view by notifying iTowns that it changed (e.g. because a layer has been added).
+   */
+    update3DView() {
+      // Request itowns view redraw
+      this.view.notifyChange();
+    }
 
   ////////////////////////////////////////////////////////
   // GETTERS FOR HTML IDS AND ELEMENTS OF THE DEMO PAGE //
