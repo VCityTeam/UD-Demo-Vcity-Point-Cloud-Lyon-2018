@@ -4,23 +4,48 @@
     "imageFolder": "./assets/img",
     "logos": ["logo-liris.png", "logo-univ-lyon.png"]
   },
-  "widgets": {
-    "aboutWindow": true,
-    "helpWindow": true,
-    "authenticationView": true,
-    "documentModule": true,
-    "documentVisualizerWindow": true,
-    "contributeModule": true,
-    "documentValidationModule": true,
-    "documentCommentsModule": true,
-    "guidedTourController": true,
-    "geocodingView": true,
-    "cityObjectModule": true,
-    "linkModule": true,
-    "debug3DTilesWindow": true,
-    "cameraPositionerView": true,
-    "LayerChoice": true
-  },
+  "3DTilesLayers": [
+    {
+      "id": "Lyon-1",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-1_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-2",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-2_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-3",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-3_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-4",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-4_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-5",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-5_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-6",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-6_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-7",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-7_2015/tileset.json",
+      "color": "0xFFFFFF"
+    },
+    {
+      "id": "Lyon-8",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-8_2015/tileset.json",
+      "color": "0xFFFFFF"
+    }
+  ],
   "server": {
     "url": "http://rict.liris.cnrs.fr:1525/",
     "login": "login",
@@ -115,89 +140,6 @@
         "materialProps": {
           "color": "#4c5af7"
         }
-      }
-    }
-  },
-  "properties": {
-    "title": {
-      "name": "title",
-      "type": "string",
-      "optional": "false",
-      "creationID": "create_title",
-      "labelCreation": "Title of the document",
-      "updatable": "false",
-      "updateID": "update_title",
-      "displayable": "true",
-      "displayID": "title",
-      "label": "false",
-      "queryable": "keyword",
-      "queryID": "query_name"
-    },
-    "description": {
-      "name": "description",
-      "type": "string",
-      "optional": "false",
-      "creationID": "create_description",
-      "labelCreation": "Description",
-      "displayable": "true",
-      "displayID": "description",
-      "label": "Description",
-      "updatable": "true",
-      "updateID": "update_description",
-      "labelUpdate": "Description: ",
-      "queryable": "keyword"
-    },
-    "refDate": {
-      "name": "refDate",
-      "type": "date",
-      "optional": "false",
-      "creationID": "create_refDate",
-      "labelCreation": "Date of referrence",
-      "displayable": "true",
-      "displayID": "refDate",
-      "label": "Referring date",
-      "updatable": "true",
-      "updateID": "update_refDate",
-      "labelUpdate": "Date of referrence",
-      "queryable": "true",
-      "labelQuery": "referring date"
-    },
-    "publicationDate": {
-      "name": "publicationDate",
-      "type": "date",
-      "optional": "false",
-      "creationID": "create_publicationDate",
-      "labelCreation": "Date of publication",
-      "displayable": "true",
-      "displayID": "publicationDate",
-      "label": "Publication date",
-      "updatable": "true",
-      "updateID": "update_publicationDate",
-      "labelUpdate": "Date of publication",
-      "queryable": "true",
-      "labelQuery": "publication date"
-    },
-    "subject": {
-      "name": "subject",
-      "type": "enum",
-      "enum": ["Urbanism", "Architecture", "Tourism"],
-      "optional": "false",
-      "creationID": "create_subject",
-      "labelCreation": "Subject",
-      "displayable": "true",
-      "displayID": "subject",
-      "label": "Subject",
-      "updatable": "true",
-      "updateID": "update_subject",
-      "queryable": "true",
-      "queryID": "query_subject",
-      "labelQuery": "Subject: "
-    },
-    "visualization": {
-      "positionX": {
-        "type": "double",
-        "optional": "false",
-        "displayable": "false"
       }
     }
   }
