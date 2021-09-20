@@ -14,6 +14,9 @@ import './AllWidget.css';
 const AIR_PORTS =
   'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
 
+const DATA_GEOJSON =
+  '../../../../../src/ne_10m_airports.geojson';
+
 const INITIAL_VIEW_STATE = {
   latitude: 51.47,
   longitude: 0.45,
@@ -93,7 +96,7 @@ export class AllWidget {
                     </ul>
                 </nav>
                 <section id="${this.contentSectionId}">
-                    <div id="${this.viewerDivId}"><canvas id="deck-canvas" style="z-index: 2;"></canvas></div>
+                    <div id="${this.viewerDivId}"></canvas></div>
                 </section>
             </div>
         `;
@@ -594,6 +597,7 @@ export class AllWidget {
     let tilt = parseFloat(this.config['camera']['position']['tilt']);
 
     // `viewerDiv` will contain iTowns' rendering area (`<canvas>`)
+    
     let viewerDiv = document.getElementById('viewerDiv');
     // Instantiate PlanarView (iTowns' view that will hold the layers)
     // The skirt allows to remove the cracks between the terrain tiles
@@ -664,6 +668,10 @@ export class AllWidget {
   initDeckgl(){
 
     this.init3DView()
+    //this.view.render = function(){}
+
+    //Set the attribute id to deck-canvas to be find for the Deck object
+    document.getElementsByTagName('canvas')[0].setAttribute('id','deck-canvas');
 
     const deck = new Deck({
       canvas: 'deck-canvas',
@@ -696,7 +704,7 @@ export class AllWidget {
       layers: [
         new GeoJsonLayer({
           id: 'airports',
-          data: AIR_PORTS,
+          data: DATA_GEOJSON,
           // Styles
           filled: true,
           pointRadiusMinPixels: 2,
@@ -712,15 +720,17 @@ export class AllWidget {
         }),
         new ArcLayer({
           id: 'arcs',
-          data: AIR_PORTS,
+          data: DATA_GEOJSON,
           dataTransform: d => d.features.filter(f => f.properties.scalerank < 4),
-          // Styles
-          getSourcePosition: f => [1843760.104658541, 5175221.593610051], // London
-          getTargetPosition: f => /*f.geometry.coordinates*/[1843592.5110736154, 5176373.4759538695],
+          // Styles1842807.1106620484,
+            
+          getSourcePosition: f => [1842807.1106620484, 5172103.319834809], // London
+          getTargetPosition: f => f.geometry.coordinates,
           getSourceColor: [0, 128, 200],
           getTargetColor: [200, 0, 80],
-          getWidth: 1200
+          getWidth: 10
         })
+        
       ]
     });
 

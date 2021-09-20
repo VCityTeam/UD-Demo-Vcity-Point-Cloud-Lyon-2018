@@ -1,0 +1,115 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "scalerank": 9,
+          "type": "small",
+          "name": "Sahnewal",
+          "abbrev": "LUH",
+          "location": "terminal",
+          "gps_code": "VILD",
+          "iata_code": "LUH",
+          "wikipedia": "http://en.wikipedia.org/wiki/Sahnewal_Airport",
+          "natlscale": 8,
+          "featureclass": "Airport"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [ 
+            1843760.104658541,
+            5175221.593610051
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "scalerank": 9,
+          "type": "mid",
+          "name": "Solapur",
+          "abbrev": "SSE",
+          "location": "terminal",
+          "gps_code": "VASL",
+          "iata_code": "SSE",
+          "wikipedia": "http://en.wikipedia.org/wiki/Solapur_Airport",
+          "natlscale": 8,
+          "featureclass": "Airport"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            1843592.5110736154,
+            5176373.4759538695
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "scalerank": 9,
+          "type": "mid",
+          "name": "Birsa Munda",
+          "abbrev": "IXR",
+          "location": "terminal",
+          "gps_code": "VERC",
+          "iata_code": "IXR",
+          "wikipedia": "http://en.wikipedia.org/wiki/Birsa_Munda_Airport",
+          "natlscale": 8,
+          "featureclass": "Airport"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            1847054.1698812598,
+            5170085.709089559
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "scalerank": 9,
+          "type": "mid",
+          "name": "Ahwaz",
+          "abbrev": "AWZ",
+          "location": "terminal",
+          "gps_code": "OIAW",
+          "iata_code": "AWZ",
+          "wikipedia": "http://en.wikipedia.org/wiki/Ahwaz_Airport",
+          "natlscale": 8,
+          "featureclass": "Airport"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            1842807.1106620484,
+            5172103.319834809
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "scalerank": 9,
+          "type": "mid and military",
+          "name": "Gwalior",
+          "abbrev": "GWL",
+          "location": "terminal",
+          "gps_code": "VIGR",
+          "iata_code": "GWL",
+          "wikipedia": "http://en.wikipedia.org/wiki/Gwalior_Airport",
+          "natlscale": 8,
+          "featureclass": "Airport"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+              1841632.5027569388,
+              5176427.358420692
+            ]
+        }
+      }
+    ]   
+}
