@@ -9,7 +9,7 @@ app.start('../assets/config/config.json').then((config) => {
 
   app.addElevationLayer();
 
-  app.setupAndAdd3DTilesLayers();
+  app.setupAndAdd3DTilesLayer();
 
   ////// REQUEST SERVICE
   const requestService = new udviz.Components.RequestService();
