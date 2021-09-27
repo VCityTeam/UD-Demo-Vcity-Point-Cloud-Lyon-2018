@@ -9,15 +9,6 @@ const $3DTemporalTileset = Widgets.$3DTemporalTileset;
 
 import './AllWidget.css';
 
-
-// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
-
-const AIR_PORTS =
-  'https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=car_care.carstructsocial_latest&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:3946';
-
-const DATA_GEOJSON =
-  '../../../../../src/ne_10m_airports.geojson';
-
 const INITIAL_VIEW_STATE = {
   longitude: 4.84025002,
   latitude: 45.75371453,
@@ -42,38 +33,23 @@ const material = {
   specularColor: [60, 64, 70]
 };
 
-const ambientLight = {
-  color: [255, 255, 255],
-  intensity: 1.0
-};
-
-const pointLight = {
-  color: [255, 255, 255],
-  intensity: 2.0,
-  position: [-74.05, 40.7, 8000]
-};
-
-const lightingEffect = {ambientLight, pointLight};
-
 const DEFAULT_THEME = {
   buildingColor: [74, 80, 87],
   trailColor0: [253, 128, 93],
   trailColor1: [23, 184, 190],
   material,
-  effect: [lightingEffect]
 };
 
-
-const MODEL_3D = 
-'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json';
-
-//variables for buildinf data -------------------------------------------------------
-
-
-//Etablissements d'accueil ou d'hébergement pour personnes en situation de handicap de la Métropole de Lyon
-const HANDICAP_FOYER =
-  'https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=car_care.carphsection_latest&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:3946';
-
+const DATA_URL = {
+  MODEL_3D : 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json',
+  CADASTRE : 
+  'https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=ima_gestion_images.imaliencitygml2015&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:3946',
+  HANDICAP_FOYER :
+  'https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=car_care.carphsection_latest&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:4171',
+  FOYER_DATA :
+  'https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=vdl_deplacements.emplacement_pmr&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:4326',
+  DATA_GEOJSON : '../../../../../src/ne_10m_airports.geojson'
+}
 
 /**
  * Represents the base HTML content of a demo for UD-Viz and provides methods to
@@ -667,7 +643,7 @@ export class AllWidget {
         tilt: tilt,
       },
     });
-    //console.log(this.view)
+
     this.layerManager = new Widgets.Components.LayerManager(this.view);
     // ********* 3D Elements
     // Lights
@@ -721,7 +697,6 @@ export class AllWidget {
     this.init3DView();
     
     //this.view.render = function(){}
-    //INITIAL_VIEW_STATE.latitude = 
 
     //Set the attribute id to deck-canvas to be find for the Deck object
     document.getElementsByTagName('canvas')[0].setAttribute('id','deck-canvas');
@@ -738,12 +713,14 @@ export class AllWidget {
         const prev = itowns.CameraUtils.getTransformCameraLookingAtTarget(this.view, cam3D);
         const newPos = prev;
         newPos.coord = new itowns.Coordinates('EPSG:4326', viewState.longitude, viewState.latitude, 0);
-        
         // newPos.range = 64118883.098724395 / (2**(viewState.zoom-1));
         newPos.range = 64118883 / (2**(viewState.zoom-1)); // 64118883 is Range at Z=1 
         newPos.heading = viewState.bearing;
         // for some reason I cant access Math.clamp
         //newPos.tilt = clamp((90 - viewState.pitch), 0, 90); 
+        //console.log(this.pr);
+        //const [x, y] = proj4.default().forward([4.806698, 45.778579]);
+        
 
         itowns.CameraUtils.transformCameraToLookAtTarget(this.view, cam3D, newPos);
         this.view.notifyChange();
@@ -756,39 +733,54 @@ export class AllWidget {
       },
       layers: [
         new GeoJsonLayer({
-          id: 'airports',
-          data: AIR_PORTS,
+          id: 'foyer',
+          data: DATA_URL.FOYER_DATA,
           // Styles
           filled: true,
           pointRadiusMinPixels: 5,
-          pointRadiusScale: 200,
-          getPointRadius: f => 11,
+          pointRadiusScale: 20,
+          getPointRadius: f => 1,
           getFillColor: [200, 0, 80, 180],
           // Interactive props
           pickable: true,
           autoHighlight: true,
-          onClick: info =>
+          /*onClick: info =>
             // eslint-disable-next-line
-            info.object && alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)
+            info.object && alert(`${info.object.properties.name} (${info.object.properties.abbrev})`)*/
         }),
         new ArcLayer({
           id: 'arcs',
-          data: AIR_PORTS,
-          dataTransform: d => d.features,
-          // Styles1842807.1106620484,
-            
-          getSourcePosition: f => [1847610.49596199, 5164349.904606865],
+          data: DATA_URL.FOYER_DATA,
+          dataTransform: d => d.features,            
+          getSourcePosition: f => [4.806698, 45.778579],
           getTargetPosition: f => f.geometry.coordinates,
           getSourceColor: [0, 128, 200],
           getTargetColor: [200, 0, 80],
-          getWidth: 10
+          getWidth: 2
         })
       ]
     });
-    this.view.notifyChange();
-  }
 
-  
+    //DEBUG
+    console.log(deck);
+    this.view.notifyChange();
+
+    const _this = this;
+    const tick = function(){
+      //_this.view.notifyChange();
+      console.log('tick');
+      console.log(_this);
+      requestAnimationFrame(tick)
+    }
+    tick();
+
+
+
+    /*this.view.addFrameRequester(
+      itowns.MAIN_LOOP_EVENTS.AFTER_CAMERA_UPDATE,
+      function(){debugger}
+    )*/
+  }
 
   initDeckglBatiment(){
 
@@ -797,29 +789,39 @@ export class AllWidget {
       528562.050592, 5734909.714011,
       552058.792620, 5747911.652989);
 
+ 
+
+    this.extent = extent;
+
+    let viewerDiv = document.getElementById('viewerDiv');
       var view = new itowns.PlanarView(viewerDiv, extent, { disableSkirt: false, maxSubdivisionLevel: 10,
         placement: new itowns.Extent('EPSG:3857', -20000000, 20000000, -8000000, 20000000),
       });
 
+    this.view = view;
+
     //this.init3DView()
     //this.view.render = function(){}
 
+    //let viewerDiv = document.getElementById('viewerDiv');
+
     //Set the attribute id to deck-canvas to be find for the Deck object
-    //document.getElementsByTagName('canvas')[0].setAttribute('id','deck-canvas');
+    document.getElementsByTagName('canvas')[0].setAttribute('id','deck-canvas');
+    document.getElementsByTagName('canvas')[0].setAttribute('z-index','-2');
 
     const deck = new Deck({
       canvas: 'deck-canvas',
       width: '100%',
       height: '100%',
-      effect : DEFAULT_THEME.effect ,
-      initialViewState: INITIAL_VIEW_STATE_BUILDING,
+      effect : false,
+      initialViewState: INITIAL_VIEW_STATE,
       map: false,
       controller: true,
       onViewStateChange: ({viewState}) => { 
         const cam3D = view.camera.camera3D;
         const prev = itowns.CameraUtils.getTransformCameraLookingAtTarget(view, cam3D);
         const newPos = prev;
-        newPos.coord = new itowns.Coordinates('EPSG:4171', viewState.longitude, viewState.latitude, 0);
+        newPos.coord = new itowns.Coordinates('EPSG:4326', viewState.longitude, viewState.latitude, 0);
 
         // newPos.range = 64118883.098724395 / (2**(viewState.zoom-1));
         newPos.range = 64118883 / (2**(viewState.zoom-1)); // 64118883 is Range at Z=1 
@@ -827,7 +829,8 @@ export class AllWidget {
         // for some reason I cant access Math.clamp
         //newPos.tilt = clamp((90 - viewState.pitch), 0, 90); 
 
-        itowns.CameraUtils.transformCameraToLookAtTarget(this.view, cam3D, newPos);
+
+        itowns.CameraUtils.transformCameraToLookAtTarget(view, cam3D, newPos);
         view.notifyChange();
         cam3D.updateMatrixWorld();
         // We can set pitch and bearing to 0 to disable tilting and turning 
@@ -839,7 +842,7 @@ export class AllWidget {
       layers: [
         new PolygonLayer({
           id: 'buildings',
-          data: MODEL_3D,
+          data: DATA_URL.MODEL_3D,
           extruded: true,
           wireframe: false,
           opacity: 0.5,
@@ -850,7 +853,7 @@ export class AllWidget {
           }),
         new GeoJsonLayer({
           id: 'foyer',
-          data: DATA_GEOJSON,
+          data: DATA_URL.FOYER_DATA,
           // Styles
           filled: true,
           pointRadiusMinPixels: 2,
@@ -866,9 +869,10 @@ export class AllWidget {
         }),
         new ArcLayer({
           id: 'arcs',
-          data: DATA_GEOJSON,
+          data: DATA_URL.FOYER_DATA,
           dataTransform: d => d.features,
           // Styles
+          
           getSourcePosition: f => [4.806698, 45.778579], 
           getTargetPosition: f => f.geometry.coordinates,
           getSourceColor: [0, 128, 200],
@@ -877,7 +881,7 @@ export class AllWidget {
         })
       ]
     });
-
+    console.log(deck);
     view.notifyChange();
   }
 
