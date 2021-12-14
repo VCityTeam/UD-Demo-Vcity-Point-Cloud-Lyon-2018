@@ -4,7 +4,7 @@ import * as udviz from 'ud-viz';
 
 const app = new udviz.Templates.AllWidget();
 
-app.start('../assets/config/config.json').then((config) => {
+app.start('../assets/config/config.json').then(() => {
   app.addBaseMapLayer();
 
   app.addElevationLayer();
@@ -12,14 +12,15 @@ app.start('../assets/config/config.json').then((config) => {
 
   ////// ABOUT MODULE
   const about = new udviz.Widgets.AboutWindow();
-  app.addModuleView("about", about);
-            ////// LAYER CHOICE MODULE
+  app.addModuleView('about', about);
+  ////// LAYER CHOICE MODULE
   const layerChoice = new udviz.Widgets.LayerChoice(app.layerManager);
   app.addModuleView('layerChoice', layerChoice);
-  
-          ////// 3DTILES DEBUG
-  const debug3dTilesWindow =
-  new udviz.Widgets.Extensions.Debug3DTilesWindow(app.layerManager);
+
+  ////// 3DTILES DEBUG
+  const debug3dTilesWindow = new udviz.Widgets.Extensions.Debug3DTilesWindow(
+    app.layerManager
+  );
   app.addModuleView('3dtilesDebug', debug3dTilesWindow, {
     name: '3DTiles Debug',
   });
