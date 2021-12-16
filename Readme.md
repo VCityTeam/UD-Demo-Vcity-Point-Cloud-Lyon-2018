@@ -14,11 +14,12 @@ Note that technically the `npm run debug` command will use the [webpack-dev-serv
  - in case of change that repacks an updated bundle
  - that triggers a client (hot) reload 
 
-## Technical notes concerning the template application
-Some modules used by the DemoFull require some server-side components to be installed on
-some server (possibly your desktop). For example
- * the 3D objects (buildings) are (by default) serverd by a LIRIS server
-   and thus require no specific configuratione there is nothing more to do
- * handling of documents will require you to [install the API_enhanced_city](https://github.com/VCityTeam/UD-Serv/blob/master/API_Enhanced_City/INSTALL.md).
- * you can also modify the [application configuration file](assets/config/config.json)
+This demo can also be started using this [Docker](https://github.com/VCityTeam/UD-Demo-Vcity-Point-Cloud-Lyon-2018-Docker).
 
+An online example of this demo can be found [here](https://point-cloud.vcityliris.data.alpha.grandlyon.com/)  
+
+### Point Cloud Computation
+
+The pipeline used to create the 3DTiles from Cloud Point is documented [here](https://github.com/VCityTeam/UD-Reproducibility/tree/master/Computations/ComputePointCloudsLyon
+
+Note: the [generated data set](https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2018/2018/Point_Cloud_Lyon_2018) is 3.9Gb, has ~44 000 files in the top level directory and 14 347 sub-directories... )

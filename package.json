@@ -17,7 +17,7 @@
     "@egjs/hammerjs": "^2.0.17",
     "keycharm": "^0.4.0",
     "timsort": "^0.3.0",
-    "ud-viz": "/rep/UD-Viz/UD-Viz",
+    "ud-viz": "git+https://github.com/VCityTeam/UD-Viz.git",
     "uuid": "^8.3.2",
     "vis-util": "^5.0.2"
   },
