@@ -44,7 +44,7 @@
   "3DTilesLayers": [
     {
       "id": "Point-Cloud",
-      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2018/Point_Cloud_Lyon_2018/tileset.json",
+      "url": "https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/Large_Points_Clouds/Point_Cloud_Lyon_2018/tileset.json",
       "pc_size": 2
     }
   ]
