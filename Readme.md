@@ -22,4 +22,4 @@ An online example of this demo can be found [here](https://point-cloud.vcityliri
 
 The pipeline used to create the 3DTiles from Cloud Point is documented [here](https://github.com/VCityTeam/UD-Reproducibility/tree/master/Computations/ComputePointCloudsLyon)
 
-Note: the [generated data set](https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2018/2018/Point_Cloud_Lyon_2018) is 3.9Gb, has ~44 000 files in the top level directory and 14 347 sub-directories... )
+Note: the [generated data set](https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/Large_Points_Clouds/Point_Cloud_Lyon_2018) is 3.9Gb, has ~44 000 files in the top level directory and 14 347 sub-directories... )
